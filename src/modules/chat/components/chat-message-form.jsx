@@ -3,9 +3,14 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import React, { useEffect, useState } from 'react'
 import { Send } from 'lucide-react'
+import { useAIModels } from '@/modules/ai-agent/hook/ai-agent'
+import { Spinner } from '@/components/ui/spinner'
+import { ModelSelector } from './model-selector'
 
 const ChatMessageForm = ({initialMessage, onMessageChange}) => {
-
+    
+    const {data: models, isPending} = useAIModels();
+    const [selectedModel, setSelectedModel] = useState(models?.models[0].id)
     const [message, setMessage] = useState(initialMessage ?? "")
 
     useEffect(() => {
@@ -27,7 +32,7 @@ const ChatMessageForm = ({initialMessage, onMessageChange}) => {
   return (
     <div className='w-full max-w-3xl mx-auto px-4 pb-6 mb-5'>
       <form onSubmit={handleSubmit}>
-        <div className='relative rounded-2xl border-1 shadow-sm transition-all'>
+        <div className='relative rounded-2xl border shadow-sm transition-all'>
             <Textarea 
             value={message}
             onChange={(e)=>setMessage(e.target.value)}
@@ -44,10 +49,15 @@ const ChatMessageForm = ({initialMessage, onMessageChange}) => {
             <div className='flex items-center justify-between gap-2 px-3 py-2 border-t'>
                 {/* Model Selector */}
                 <div className='flex items-center gap-1'>
-                    <Button
-                    variant='outline'>
-                        Select a model
-                    </Button>
+                    { isPending ? (<><Spinner /> </>) : (
+                        <>
+                            <ModelSelector 
+                            models={models?.models}
+                            selectedModelId={selectedModel}
+                            onModelSelect={setSelectedModel}
+                            className={"ml-1"}/>
+                        </>
+                    )}
                 </div>
 
                 <Button
