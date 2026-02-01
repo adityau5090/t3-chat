@@ -1,0 +1,25 @@
+"use client"
+import { useGetChatById } from '@/modules/chat/hooks/chat'
+import { useChatStore } from '@/modules/chat/store/chat-store'
+import React, { useEffect } from 'react'
+
+const ActiveChatLoader = ({ chatId }) => {
+    const {setActiveChatId, setMessages, addChat, chats} = useChatStore()
+
+    const {data} = useGetChatById(chatId);
+
+    useEffect(() => {
+        if(!data || !data.success || !data.data) return;
+        const chat = data.data;
+
+        setMessages(chat.message || []);
+
+        if(chats?.some((c) => c.id === chat.id)){
+            addChat(chat);
+        }
+    }, [data, setMessages, addChat, chats]) 
+ 
+    return null;
+}
+
+export default ActiveChatLoader
