@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 
 export function ModelSelector({
-  models,
+  models=[],
   selectedModelId,
   onModelSelect,
   className,
@@ -31,13 +31,14 @@ export function ModelSelector({
   const [selectedForDetails, setSelectedForDetails] = useState(null);
   const [searchQuery, setSearchQuery] = useState("")
 
-  const selectedModel = models.find((m) => m.id === selectedModelId);
+  const selectedModel = models?.find((m) => m.id === selectedModelId);
 
   const formatContextLength = (length) => {
     if (length >= 1000000) return `${(length / 1000000).toFixed(1)}M`;
     if (length >= 1000) return `${(length / 1000).toFixed(0)}K`;
     return length.toString();
   };
+
 
   const isFreeModel = (model) => {
     return (
